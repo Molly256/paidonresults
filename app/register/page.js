@@ -86,10 +86,16 @@ export default function RegisterPage() {
     c.code.includes(search)
   );
 
+  const closeDropdown = () => { setOpen(false); setSearch(""); };
+
   return (
     <div className="min-h-screen w-full flex items-center justify-center px-4 py-8 relative overflow-hidden"
       style={{ background: "linear-gradient(180deg, #ffc2e0 0%, #ff9ecb 50%, #ff85be 100%)" }}
     >
+      {open && (
+        <div className="fixed inset-0 z-20 bg-black/20" onClick={closeDropdown} />
+      )}
+
       <div className="absolute inset-0 pointer-events-none opacity-40"
         style={{
           backgroundImage: "radial-gradient(white 1px, transparent 1px), radial-gradient(white 1px, transparent 1px)",
@@ -97,15 +103,11 @@ export default function RegisterPage() {
         }}
       />
 
-      <div className="w-full max-w-[380px] relative z-10">
+      <div className="w-full max-w-[380px] relative z-30">
         <div className="text-center mb-4">
-          <div className="flex justify-center -mb-2">
-            <img src="/paid.png" alt="logo" className="w-14 h-14 object-contain drop-shadow-lg" />
+          <div className="flex justify-center">
+            <img src="/paid.png" alt="logo" className="w-28 h-28 object-contain drop-shadow-lg" />
           </div>
-          <h1 className="font-black leading-none">
-            <span className="block text-[34px] text-[#7b2cff] drop-shadow-[0_2px_0_#fff]">PAID ON</span>
-            <span className="block text-[42px] text-[#7b2cff] -mt-1 drop-shadow-[0_2px_0_#fff]">results</span>
-          </h1>
           <h2 className="text-[38px] font-bold text-white tracking-widest mt-1">SIGN UP</h2>
         </div>
 
@@ -113,29 +115,33 @@ export default function RegisterPage() {
           <div className="space-y-3">
             <div className="bg-white rounded-[10px] border border-[#e8c2d1] px-3 py-2">
               <label className="text-[13px] font-semibold text-black block leading-none">Username</label>
-              <input placeholder="Enter your username" className="w-full text-[13px] outline-none bg-transparent" />
+              <input placeholder="Enter your username" className="w-full text-[13px] outline-none bg-transparent text-black placeholder:text-gray-400" />
             </div>
 
             <div className="bg-white rounded-[10px] border border-[#e8c2d1] px-3 py-2 relative">
               <label className="text-[13px] font-semibold text-black block leading-none">Phone</label>
               <div className="flex items-center gap-2 mt-1">
-                <button type="button" onClick={() => setOpen(!open)} className="flex items-center gap-1 bg-gray-100 rounded-md px-2 py-1 text-[13px] border">
+                <button type="button" onClick={() => open ? closeDropdown() : setOpen(true)} className="flex items-center gap-1 bg-gray-100 rounded-md px-2 py-1 text-[13px] border text-black">
                   <span>{selected.flag}</span>
                   <span>{selected.code}</span>
-                  <span className="text-[10px]">▼</span>
+                  <span className="text-[10px]">{open ? "▲" : "▼"}</span>
                 </button>
-                <input placeholder="(000) 000-0000" className="flex-1 text-[13px] outline-none bg-transparent" />
+                <input placeholder="(000) 000-0000" className="flex-1 text-[13px] outline-none bg-transparent text-black placeholder:text-gray-400" />
               </div>
 
               {open && (
                 <div className="absolute left-0 right-0 top-[65px] bg-white border rounded-lg shadow-lg max-h-[200px] overflow-hidden z-50">
-                  <input autoFocus placeholder="Search country" value={search} onChange={e=>setSearch(e.target.value)} className="w-full border-b px-3 py-2 text-[12px] outline-none" />
+                  <div className="flex items-center border-b">
+                    <input autoFocus placeholder="Search country" value={search} onChange={e=>setSearch(e.target.value)} className="flex-1 px-3 py-2 text-[12px] outline-none text-black placeholder:text-gray-400" />
+                    <button type="button" onClick={closeDropdown} className="px-3 py-2 text-black font-bold text-[16px]">✕</button>
+                  </div>
                   <div className="overflow-y-auto max-h-[160px]">
                     {filtered.map((c) => (
-                      <button key={c.iso+c.code} onClick={() => { setSelected(c); setOpen(false); setSearch(""); }} className="w-full text-left px-3 py-2 hover:bg-pink-50 flex items-center gap-2 text-[13px]">
+                      <button key={c.iso+c.code} onClick={() => { setSelected(c); closeDropdown(); }} className="w-full text-left px-3 py-2 hover:bg-pink-50 flex items-center gap-2 text-[13px] text-black">
                         <span>{c.flag}</span><span className="flex-1">{c.name}</span><span className="text-gray-500">{c.code}</span>
                       </button>
                     ))}
+                    {filtered.length === 0 && <p className="px-3 py-2 text-[13px] text-black">No country found</p>}
                   </div>
                 </div>
               )}
@@ -143,13 +149,13 @@ export default function RegisterPage() {
 
             <div className="bg-white rounded-[10px] border border-[#e8c2d1] px-3 py-2">
               <label className="text-[13px] font-semibold text-black block leading-none">Email</label>
-              <input placeholder="Enter your email" className="w-full text-[13px] outline-none bg-transparent" />
+              <input placeholder="Enter your email" className="w-full text-[13px] outline-none bg-transparent text-black placeholder:text-gray-400" />
             </div>
 
             <div className="bg-white rounded-[10px] border border-[#e8c2d1] px-3 py-2 flex items-center justify-between">
               <div className="flex-1">
                 <label className="text-[13px] font-semibold text-black block leading-none">Password</label>
-                <input type={showPass ? "text" : "password"} placeholder="Create password" className="w-full text-[13px] outline-none bg-transparent" />
+                <input type={showPass ? "text" : "password"} placeholder="Create password" className="w-full text-[13px] outline-none bg-transparent text-black placeholder:text-gray-400" />
               </div>
               <button type="button" onClick={() => setShowPass(!showPass)} className="text-[18px] ml-2">{showPass ? "👁️‍🗨️" : "👁️"}</button>
             </div>
@@ -157,7 +163,7 @@ export default function RegisterPage() {
             <div className="bg-white rounded-[10px] border border-[#e8c2d1] px-3 py-2 flex items-center justify-between">
               <div className="flex-1">
                 <label className="text-[13px] font-semibold text-black block leading-none">Confirm password</label>
-                <input type={showConfirm ? "text" : "password"} placeholder="Re-enter password" className="w-full text-[13px] outline-none bg-transparent" />
+                <input type={showConfirm ? "text" : "password"} placeholder="Re-enter password" className="w-full text-[13px] outline-none bg-transparent text-black placeholder:text-gray-400" />
               </div>
               <button type="button" onClick={() => setShowConfirm(!showConfirm)} className="text-[18px] ml-2">{showConfirm ? "👁️‍🗨️" : "👁️"}</button>
             </div>
@@ -165,14 +171,14 @@ export default function RegisterPage() {
             <div className="bg-white rounded-[10px] border border-[#e8c2d1] px-3 py-2 flex items-center justify-between">
               <div className="flex-1">
                 <label className="text-[13px] font-semibold text-black block leading-none">Transaction password</label>
-                <input type={showTrans ? "text" : "password"} placeholder="Create transaction password" className="w-full text-[13px] outline-none bg-transparent" />
+                <input type={showTrans ? "text" : "password"} placeholder="Create transaction password" className="w-full text-[13px] outline-none bg-transparent text-black placeholder:text-gray-400" />
               </div>
               <button type="button" onClick={() => setShowTrans(!showTrans)} className="text-[18px] ml-2">{showTrans ? "👁️‍🗨️" : "👁️"}</button>
             </div>
 
             <div className="flex items-center gap-3 pt-1">
               <span className="text-[13px] font-semibold text-black">Gender</span>
-              <select className="flex-1 bg-white border border-[#e8c2d1] rounded-[8px] px-3 py-2 text-[13px] outline-none">
+              <select className="flex-1 bg-white border border-[#e8c2d1] rounded-[8px] px-3 py-2 text-[13px] outline-none text-black">
                 <option>Select gender</option><option>Male</option><option>Female</option><option>Other</option>
               </select>
             </div>
